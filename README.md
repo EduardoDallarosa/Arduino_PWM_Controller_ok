@@ -1,2 +1,53 @@
-# Arduino_PWM_Controller
- 
+[Introdução ao PWM](#introdução-ao-pwm)
+
+
+[Componentes necessários](#componentes-necessários)
+
+
+[Esquemático](#esquemático)
+
+
+[Código-fonte](#código-fonte)
+
+#include <Arduino.h>
+
+
+#define BUTTON_PIN 2 //atribui o valor 2 ao botão
+#define PWM 9 //define o valor 9 para o pwm
+
+
+int estado_botao = 0;
+int pwm = 0;
+int ultimo_estado_botao = 0;   //armazena o estado do botão
+unsigned long tempo_acionado = 0; 
+unsigned long tempo_delay = 50;
+
+void setup() {
+  pinMode(PWM, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+}
+
+void loop() {
+
+  int leitura = digitalRead(BUTTON_PIN); //lê o botão
+
+  if (leitura != ultimo_estado_botao) {
+    ultimo_estado_botao = leitura;
+    if (leitura == HIGH) {  
+      tempo_acionado = millis();
+    }
+  }
+
+  if (leitura == HIGH && ((millis() - tempo_acionado) > tempo_delay)) {
+    pwm += 64;
+    if(pwm > 255){
+      pwm=0;
+    }
+  }
+
+  analogWrite(PWM, pwm);
+  delay(50);
+}
+
+
+[Funcionamento do projeto](#funcionamento-do-projeto)
